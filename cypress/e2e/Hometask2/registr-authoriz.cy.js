@@ -45,6 +45,11 @@ describe('Registration/authorization', () => {
     cy.get('#AccountFrm_confirm').type(user.password)
     .should('have.value',user.password);
 
+    //вичитати значення паролю з поля вводу
+    cy.get('#AccountFrm_password').invoke('val').then(fieldValue => {
+      cy.log('pass: ' + fieldValue);
+  });
+
     cy.get('#AccountFrm_newsletter0').check();
     cy.get('#AccountFrm_agree').check();
 
