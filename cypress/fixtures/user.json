@@ -3,5 +3,6 @@
   "email": "nor@test.com",
   "firstName": "Tetiana",
   "password": "password123",
-  "postcode": "BT472AY"
+  "postcode": "BT472AY",
+  "city": "Kyiv"
 }
