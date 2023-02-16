@@ -1,7 +1,5 @@
 ///<reference types="cypress"/>
 
-const { should } = require("chai");
-
 
 describe('template spec', () => {
   it('Implicit assertions', () => {

@@ -1,5 +1,7 @@
 ///<reference types="cypress"/>
 
+import * as testData from '../fixtures/example.json' ///щоб використати дату з окремого файлу .json 
+
 const pageUrl = 'https://sanitarskyi-ngx-admin.herokuapp.com';
 
 
