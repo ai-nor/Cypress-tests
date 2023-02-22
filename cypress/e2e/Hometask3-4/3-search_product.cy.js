@@ -1,34 +1,15 @@
-///<reference types="cypress"/>
-import { faker } from '@faker-js/faker';
+
+import {headlessLogin} from '../../support/helper'; 
+import {searchProductByName} from '../../support/helper'; 
 import * as user from '../../fixtures/user.json';
 import * as product from '../../fixtures/product.json';
 
-describe('Test login', () => {
+it(`test`, () => {
 
-  beforeEach('Login to account', () => {
-    cy.visit ('https://automationteststore.com/index.php?rt=account/login');
-    cy.get('#loginFrm_loginname').type(user.userName);
-    cy.get(`#loginFrm_password`).type(user.password);
-    cy.get('[title="Login"]').click();
-    cy.location().should((loc) => {
-      expect(loc.href).to.eq('https://automationteststore.com/index.php?rt=account/account');
-    })
-    cy.get('.maintext')
-    .should('contain.text','My Account');
+    headlessLogin(user);
+    searchProductByName('e');
 
-    cy.get('.subtext')
-    .should('contain.text', user.firstName);
-  })
 
-  it(`Login successfull`, () => {
-
-    cy.visit('https://automationteststore.com/');
-    
-    cy.log('Додавання товару у кошик');
-    cy.get(`[title="${product.name}"]`).eq(0).click();
-    cy.location().should((loc) => {
-      expect(loc.href).to.eq(`https://automationteststore.com/index.php?rt=product/product&product_id=${product.Id}`);
-    })
     cy.get('.cart').should('be.visible').click();
     
     cy.log('Перевірка товару у кошику');
@@ -79,6 +60,5 @@ describe('Test login', () => {
     cy.get('.maintext')
     .should('contain','Your Order Has Been Processed!');
 
-  })
-})
 
+})
