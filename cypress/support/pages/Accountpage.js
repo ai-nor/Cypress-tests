@@ -12,6 +12,14 @@ class Accountpage {
         .should('contain.text', user.firstName);
     }
 
+    verifyNewUser(user) {
+        cy.location().should((loc) => {
+            expect(loc.href).to.eq('https://automationteststore.com/index.php?rt=account/success');
+          })
+        cy.get('.maintext')
+        .should('contain.text','Your Account Has Been Created!');
+    
+    }
 }
 
 export default new Accountpage();

@@ -16,10 +16,22 @@ class Loginpage {
         return cy.get('[title="Login"]');
     }
 
+    getRegistrationLink(){
+        return cy.get('#accountFrm_accountregister');
+    }
+
+    getContinue() {
+        return cy.get(`[title="Continue"]`);
+    }
+
     submitLoginform(user) {
         this.getLoginField().type(user.username);
         this.getPassField().type(user.password);
         this.getSubmit().click();
+    }
+    goToRegistration(){
+        this.getRegistrationLink().click();
+        this.getContinue().click();
     }
 }
 
