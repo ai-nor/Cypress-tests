@@ -1,41 +1,79 @@
 
 
-export function searchProductByName(value) {
+export function searchProductByName(value, product) {
     cy.visit('/');
     cy.get('input#filter_keyword').type(value);
     cy.get('.button-in-search').click();
+        
+    function findProduct(product) {
+        
+        cy.get('.fixed_wrapper').then((content) => {
     
-    
-    // let goToNextPage = function() {
-    //     cy.get('.pagination li').find('a').contains('>').should('be.visible')
-    //       .then(($el) => {
-    //         // якщо елемент видимий, клікаємо на нього
-    //         $el.click();
-    //       })
-    //       .catch(() => {
-    //         // якщо елемент не видимий, виводимо повідомлення
-    //         cy.log('Перевірку закінчено,товар не знайдений');
-    //       });
-    //   }
-    
-    cy.get('.fixed_wrapper').each(($el) => {
-        const text = $el.text(); 
-        cy.log(text);
-        if(text.includes(product.name)) {
-            cy.wrap($el).click();
+            if(cy.get(content.find(`[title='${product}']`).length >0)) {
+                cy.get(`[title='${product}']`).click();
+            }
+            else {
+                cy.get('.pagination li').contains('>').click();
+                findProduct(product);
+            }
+            })
         }
-        else {
-            cy.get('.pagination li').contains('>').click();
-        }
-    
-    })
-    .then(($els) => {
-        if ($els.length === 0) {
-            cy.log('Елемент не знайдено');
-           }
-        })
+        
+    findProduct(product);
 }
 
+export function orderProductByUser(product, user) {
+    cy.get('.cart').should('be.visible').click();
+    
+    cy.log('Перевірка товару у кошику');
+    cy.location().should((loc) => {
+      expect(loc.href).to.eq('https://automationteststore.com/index.php?rt=checkout/cart');
+    })
+    cy.get(`#cart_quantity${product.Id}`).clear().type('1');
+    cy.get('#cart_update').click();
+    cy.get('tbody .align_left a')
+    .should('contain', `${product.name}`);
+    cy.get('tbody .align_left').eq(3)
+    .should('contain',`${product.model}`);
+    cy.get('tbody .align_right').eq(2)
+    .should('contain',`${product.price}`);
+    cy.get('tbody .align_right').eq(3)
+    .should('contain',`${product.price}`);
+    
+    cy.log('Замовлення товару');
+    cy.get('#cart_checkout1').click();
+
+    cy.log('Перегляд інформації щодо оплати/доставки');
+    cy.location().should((loc) => {
+      expect(loc.href).to.eq('https://automationteststore.com/index.php?rt=checkout/confirm');
+    })
+    cy.get('.confirm_shippment_options')
+    .children()
+    .should('contain',`${user.firstName}`)
+    .and('contain', `${user.city}`)
+    .and('contain', `${user.postcode}`);
+    cy.get('.confirm_payment_options')
+    .children()
+    .should('contain',`${user.firstName}`)
+    .and('contain', `${user.city}`)
+    .and('contain', `${user.postcode}`);
+
+    cy.get('.sidewidt')
+    .children()
+    .should('contain', `${product.name}`)
+    .and('contain', `${product.price}`);
+
+    cy.log('Підтвердження замовлення');
+    cy.get('#checkout_btn').click();
+
+    cy.log('Замовлення створене');
+    cy.location().should((loc) => {
+      expect(loc.href).to.eq('https://automationteststore.com/index.php?rt=checkout/success');
+    })
+    cy.get('.maintext')
+    .should('contain','Your Order Has Been Processed!');
+
+}
 
 
 export function loginViaUI(user){
